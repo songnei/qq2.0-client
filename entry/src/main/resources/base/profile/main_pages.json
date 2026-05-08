@@ -1,0 +1,19 @@
+{
+  "src": [
+    "pages/Index",
+    "pages/LoginPage",
+    "pages/RegisterPage",
+    "pages/MainPage",
+    "pages/SettingsPage",
+    "pages/StatusPage",
+    "pages/SidebarPage",
+    "pages/SearchPage",
+    "pages/ChatPage",
+    "pages/ChatInfoPage",
+    "pages/ContactDetailPage",
+    "pages/DynamicSubPage",
+    "pages/AddPage",
+    "pages/CreateGroupPage",
+    "pages/InviteFriendsPage"
+  ]
+}

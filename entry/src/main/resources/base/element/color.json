@@ -1,0 +1,44 @@
+{
+  "color": [
+    {
+      "name": "start_window_background",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "qq_blue",
+      "value": "#12B7F5"
+    },
+    {
+      "name": "qq_blue_dark",
+      "value": "#0E9FD9"
+    },
+    {
+      "name": "qq_gray",
+      "value": "#F5F5F5"
+    },
+    {
+      "name": "qq_text_gray",
+      "value": "#999999"
+    },
+    {
+      "name": "qq_text_dark",
+      "value": "#333333"
+    },
+    {
+      "name": "qq_divider",
+      "value": "#E5E5E5"
+    },
+    {
+      "name": "qq_background",
+      "value": "#F0F0F0"
+    },
+    {
+      "name": "qq_tab_normal",
+      "value": "#8C8C8C"
+    },
+    {
+      "name": "qq_red_dot",
+      "value": "#FA5151"
+    }
+  ]
+}
