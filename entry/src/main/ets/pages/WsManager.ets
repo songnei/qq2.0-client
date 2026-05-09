@@ -20,6 +20,7 @@ let isConnected: boolean = false
 let heartbeatTimer: number = -1
 let reconnectTimer: number = -1
 let reconnectDelay: number = 1000
+let connectionId: number = 0
 
 function getAuthMessage(): string {
   const userId = AppStorage.get<string>('userId') || '0'
@@ -100,6 +101,8 @@ function stopHeartbeat(): void {
 
 function scheduleReconnect(): void {
   if (reconnectTimer >= 0) return
+  const userId = AppStorage.get<string>('userId') || ''
+  if (userId.length === 0) return
   reconnectTimer = setTimeout(() => {
     reconnectTimer = -1
     connectWs()
@@ -111,20 +114,32 @@ function connectWs(): void {
   const userId = AppStorage.get<string>('userId') || ''
   if (userId.length === 0) return
 
+  connectionId = connectionId + 1
+  const myConnId = connectionId
+
   if (wsInstance !== null) {
     try {
-      wsInstance.close((err) => {
-        if (err) {
-        }
+      wsInstance.close((_err) => {
       })
     } catch (_e) {
     }
     wsInstance = null
+    isConnected = false
   }
 
-  wsInstance = webSocket.createWebSocket()
+  const socket = webSocket.createWebSocket()
+  wsInstance = socket
 
-  wsInstance.connect(WS_URL, (err) => {
+  socket.connect(WS_URL, (err) => {
+    if (myConnId !== connectionId) {
+      try {
+        socket.close((_e) => {
+        })
+      } catch (_e) {
+      }
+      return
+    }
+
     if (err) {
       isConnected = false
       scheduleReconnect()
@@ -134,27 +149,30 @@ function connectWs(): void {
     isConnected = true
     reconnectDelay = 1000
 
-    wsInstance!.on('message', (_err, data) => {
+    socket.on('message', (_err, data) => {
+      if (myConnId !== connectionId) return
       if (_err) return
       if (typeof data === 'string') {
         handleMessage(data)
       }
     })
 
-    wsInstance!.on('close', () => {
+    socket.on('close', () => {
+      if (myConnId !== connectionId) return
       isConnected = false
       stopHeartbeat()
       wsInstance = null
       scheduleReconnect()
     })
 
-    wsInstance!.on('error', () => {
+    socket.on('error', () => {
+      if (myConnId !== connectionId) return
       isConnected = false
       stopHeartbeat()
     })
 
     const authMsg = getAuthMessage()
-    wsInstance!.send(authMsg, (_err) => {
+    socket.send(authMsg, (_err) => {
       if (_err) {
       }
     })
@@ -163,10 +181,15 @@ function connectWs(): void {
 
 function connect(): void {
   if (isConnected && wsInstance !== null) return
+  if (reconnectTimer >= 0) {
+    clearTimeout(reconnectTimer)
+    reconnectTimer = -1
+  }
   connectWs()
 }
 
 function disconnect(): void {
+  connectionId = connectionId + 1
   stopHeartbeat()
   if (reconnectTimer >= 0) {
     clearTimeout(reconnectTimer)

@@ -969,7 +969,8 @@ struct ChatInfoPage {
                         await del<void>(Api.groupDelete(this.groupId))
                         promptAction.showToast({ message: '群聊已解散' })
                         AppStorage.setOrCreate<number>('msgPageRefresh', Date.now())
-                        router.back()
+                        router.clear()
+                        router.pushUrl({ url: 'pages/MainPage' })
                       } catch (_e) {
                         promptAction.showToast({ message: '解散失败' })
                       }
@@ -1002,7 +1003,8 @@ struct ChatInfoPage {
                         await post<void>(Api.groupExit(this.groupId))
                         promptAction.showToast({ message: '已退出群聊' })
                         AppStorage.setOrCreate<number>('msgPageRefresh', Date.now())
-                        router.back()
+                        router.clear()
+                        router.pushUrl({ url: 'pages/MainPage' })
                       } catch (_e) {
                         promptAction.showToast({ message: '退出失败' })
                       }
